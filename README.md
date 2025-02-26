@@ -3,6 +3,9 @@
 Salary Insights Dashboard - Power BI
 📊 A Power BI dashboard analyzing salary trends in AI/ML field across job roles, locations, experience levels, employment type, remote work, company size.
 
+![Salary Dashboard](https://raw.githubusercontent.com/VanshikaMehta18/PowerBI_SalaryDashboard/main/Screenshots%20of%20dashboard/Full%20Dashboard.png)
+
+
 # Key Visualizations
 Salary Trends Over Time – Line chart analyzing salary changes by experience.
 Salary by Job Title – Bar chart showing salary distribution across job roles.
