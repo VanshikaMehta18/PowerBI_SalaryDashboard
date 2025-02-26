@@ -1,0 +1,25 @@
+let
+    Source = Csv.Document(File.Contents("E:\power bi\salaries.csv"),[Delimiter=",", Columns=11, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"work_year", Int64.Type}, {"experience_level", type text}, {"employment_type", type text}, {"job_title", type text}, {"salary", Int64.Type}, {"salary_currency", type text}, {"salary_in_usd", Int64.Type}, {"employee_residence", type text}, {"remote_ratio", Int64.Type}, {"company_location", type text}, {"company_size", type text}}),
+    #"Replaced Value" = Table.ReplaceValue(#"Changed Type","SE","Senior",Replacer.ReplaceText,{"experience_level"}),
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","EN","Entry level",Replacer.ReplaceText,{"experience_level"}),
+    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","MI","Mid level",Replacer.ReplaceText,{"experience_level"}),
+    #"Replaced Value3" = Table.ReplaceValue(#"Replaced Value2","EX","Executive level",Replacer.ReplaceText,{"experience_level"}),
+    #"Replaced Value4" = Table.ReplaceValue(#"Replaced Value3","Senior","Senior level",Replacer.ReplaceText,{"experience_level"}),
+    #"Replaced Value5" = Table.ReplaceValue(#"Replaced Value4","FT","Fulltime",Replacer.ReplaceText,{"employment_type"}),
+    #"Replaced Value6" = Table.ReplaceValue(#"Replaced Value5","PT","Parttime",Replacer.ReplaceText,{"employment_type"}),
+    #"Replaced Value7" = Table.ReplaceValue(#"Replaced Value6","FL","Freelancer",Replacer.ReplaceText,{"employment_type"}),
+    #"Replaced Value8" = Table.ReplaceValue(#"Replaced Value7","CT","Contract",Replacer.ReplaceText,{"employment_type"}),
+    #"Removed Columns" = Table.RemoveColumns(#"Replaced Value8",{"salary", "salary_currency"}),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Removed Columns",{{"remote_ratio", type text}}),
+    #"Replaced Value9" = Table.ReplaceValue(#"Changed Type1","M","Medium",Replacer.ReplaceText,{"company_size"}),
+    #"Replaced Value10" = Table.ReplaceValue(#"Replaced Value9","L","Large",Replacer.ReplaceText,{"company_size"}),
+    #"Replaced Value11" = Table.ReplaceValue(#"Replaced Value10","S","Small",Replacer.ReplaceText,{"company_size"}),
+    #"Duplicated Column" = Table.DuplicateColumn(#"Replaced Value11", "work_year", "work_year - Copy"),
+    #"Removed Columns1" = Table.RemoveColumns(#"Duplicated Column",{"work_year - Copy"}),
+    #"Added Custom" = Table.AddColumn(#"Removed Columns1", "Custom", each [salary_in_usd] + [work_year]),
+    #"Renamed Columns" = Table.RenameColumns(#"Added Custom",{{"Custom", "total"}}),
+    #"Changed Type2" = Table.TransformColumnTypes(#"Renamed Columns",{{"remote_ratio", Int64.Type}})
+in
+    #"Changed Type2"
